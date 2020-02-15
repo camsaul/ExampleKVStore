@@ -42,11 +42,10 @@
   (throw (ex-info "Goodbye!" {:close? true})))
 
 (defn- parse [input]
-  (println "(pr-str input):" (pr-str input)) ; NOCOMMIT
   (str/split input #"\s+"))
 
 (defn handle-command [port input]
-  (println "[Client Got Line:" (pr-str (parse input)))
+  (printf "Client at port %d got line: %s\n" port (pr-str (parse input)))
   (let [result (apply do! port (parse input))]
     (println "base-store" (pr-str @store/base-store))
     (println "port->transaction-stores:" (pr-str @store/port->transaction-stores))

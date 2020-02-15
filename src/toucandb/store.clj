@@ -7,12 +7,14 @@
 (defn value [client-id k]
   (let [result (some
                 (fn [store]
-                  (get store k))
+                  (when (contains? store k)
+                    [::found (get store k)]))
                 (concat (get @port->transaction-stores client-id)
                         [@base-store]))]
-    (if (nil? result)
+    (if (or (nil? result)
+            (nil? (second result)))
       "Error key not found!"
-      result)))
+      (second result))))
 
 (defn set-value! [client-id k v]
   (if (seq (get @port->transaction-stores client-id))
