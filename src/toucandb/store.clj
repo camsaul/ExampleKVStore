@@ -5,11 +5,14 @@
 (defonce port->transaction-stores (atom {}))
 
 (defn value [client-id k]
-  (some
-   (fn [store]
-     (get store k))
-   (concat (get @port->transaction-stores client-id)
-           [@base-store])))
+  (let [result (some
+                (fn [store]
+                  (get store k))
+                (concat (get @port->transaction-stores client-id)
+                        [@base-store]))]
+    (if (nil? result)
+      "Error key not found!"
+      result)))
 
 (defn set-value! [client-id k v]
   (if (seq (get @port->transaction-stores client-id))
